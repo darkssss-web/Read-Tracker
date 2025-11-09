@@ -1,44 +1,32 @@
-const books = [];
+const readingStats = [
+  { month: 'Сентябрь', books: 2 },
+  { month: 'Октябрь', books: 3 },
+  { month: 'Ноябрь', books: 4 },
+  { month: 'Декабрь', books: 1 },
+];
 
-function renderBooks() {
+function renderStats() {
   const app = document.getElementById('app');
   app.innerHTML = `
-    <h2>Мои книги</h2>
-    <div class="row">
-      <input id="titleInput" type="text" placeholder="Название книги" />
-      <input id="authorInput" type="text" placeholder="Автор" />
-      <button onclick="addBook()">Добавить</button>
-    </div>
-    <ul id="bookList"></ul>
+    <h2>Статистика чтения</h2>
+    <canvas id="statsChart" width="400" height="200" aria-label="График чтения"></canvas>
   `;
 
-  const list = document.getElementById('bookList');
-  books.forEach((b, i) => {
-    const li = document.createElement('li');
-    li.innerHTML = `
-      <span>${b.title} — <em>${b.author}</em></span>
-      <button onclick="deleteBook(${i})">Удалить</button>
-    `;
-    list.appendChild(li);
+  const ctx = document.getElementById('statsChart').getContext('2d');
+
+  ctx.fillStyle = '#0d6efd';
+  const max = Math.max(...readingStats.map(r => r.books));
+  const barWidth = 60;
+  readingStats.forEach((r, i) => {
+    const barHeight = (r.books / max) * 150;
+    ctx.fillRect(60 * i + 40, 180 - barHeight, barWidth, barHeight);
+    ctx.fillText(r.month, 60 * i + 40, 195);
   });
 }
 
-function addBook() {
-  const title = document.getElementById('titleInput').value.trim();
-  const author = document.getElementById('authorInput').value.trim();
-
-  if (!title || !author) {
-    alert('Введите название и автора!');
-    return;
-  }
-
-  books.push({ title, author });
-  renderBooks();
-}
-
-function deleteBook(index) {
-  books.splice(index, 1);
-  renderBooks();
-}
-
-window.addEventListener('DOMContentLoaded', renderBooks);
+window.addEventListener('hashchange', () => {
+  if (location.hash === '#/stats') renderStats();
+});
+window.addEventListener('DOMContentLoaded', () => {
+  if (location.hash === '#/stats') renderStats();
+});
