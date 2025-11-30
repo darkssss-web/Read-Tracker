@@ -1,0 +1,33 @@
+@startuml Завершение_Чтения_Книги
+
+actor "Пользователь" as User
+participant "Интерфейс" as UI
+participant "Контроллер" as Controller
+participant "Сервис книг" as BookService
+database "База данных" as DB
+
+User -> UI : Выбрать книгу и статус "Прочитана"
+UI -> Controller : PATCH /books/{id}/status (finished)
+activate Controller
+
+Controller -> BookService : markAsFinished(book_id)
+activate BookService
+
+BookService -> DB : UPDATE Books SET status='finished', finished_at=NOW()
+DB --> BookService : OK
+
+BookService -> DB : SELECT SUM(pages_read) FROM Reading_Sessions WHERE book_id=?
+DB --> BookService : read_pages
+
+BookService -> DB : UPDATE Books SET progress=100 WHERE book_id=?
+DB --> BookService : OK
+
+BookService --> Controller : Успех
+deactivate BookService
+
+Controller --> UI : 200 OK
+deactivate Controller
+
+UI -> User : Показать статус "Прочитана" и 100% прогресса
+
+@enduml
