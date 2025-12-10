@@ -1,0 +1,792 @@
+{
+	"info": {
+		"_postman_id": "952300de-231a-4527-8327-f54800c06bda",
+		"name": "Read-Tracker API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50726045",
+		"_collection_link": "https://asadikqwert-7135334.postman.co/workspace/f9fd55ed-0462-44f5-8cdd-34ac6cd04fda/collection/50726045-952300de-231a-4527-8327-f54800c06bda?action=share&source=collection_link&creator=50726045"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Token exists\", function () {",
+									"    const body = pm.response.json();",
+									"    pm.expect(body.token).to.exist;",
+									"});",
+									"",
+									"pm.environment.set(\"auth_token\", pm.response.json().token);",
+									"",
+									"pm.environment.set(\"user_id\", pm.response.json().user_id);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"darkssss\",\n  \"password\": \"testpass1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login?username=darkssss",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "darkssss"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success - Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"darkssss\",\n  \"password\": \"testpass1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/login?username=darkssss",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "darkssss"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"token\": \"mock_jwt_token_read_tracker\",\n  \"user_id\": 1,\n  \"username\": \"darkssss\",\n  \"message\": \"Login successful\"\n}"
+						},
+						{
+							"name": "Error – Invalid credentials",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"darkssss\",\n  \"password\": \"testpass1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/login?username=wronguser",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									],
+									"query": [
+										{
+											"key": "username",
+											"value": "wronguser"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Invalid credentials\",\n    \"code\": \"AUTH_ERROR\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Books Management",
+			"item": [
+				{
+					"name": "Get All Books",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Books array exists\", function () {",
+									"    const body = pm.response.json();",
+									"    pm.expect(body.books).to.be.an(\"array\");",
+									"});",
+									"",
+									"const books = pm.response.json().books;",
+									"if (books.length > 0) {",
+									"    pm.environment.set(\"book_id\", books[0].id);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/books?status=reading",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"books"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "reading"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success – With books",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/books?status=reading",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"books"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "reading"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"books\": [\n        {\n            \"id\": 1,\n            \"title\": \"Гарри Поттер\",\n            \"author\": \"Джоан Роулинг\",\n            \"pages\": 500,\n            \"current_page\": 120,\n            \"status\": \"reading\",\n            \"genre_id\": 2,\n            \"created_at\": \"2025-01-15T10:00:00Z\"\n        },\n        {\n            \"id\": 2,\n            \"title\": \"Властелин колец\",\n            \"author\": \"Толкин\",\n            \"pages\": 900,\n            \"current_page\": 900,\n            \"status\": \"finished\",\n            \"genre_id\": 1,\n            \"created_at\": \"2025-01-10T14:30:00Z\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "Success – Empty list",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/books?status=finished",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"books"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "finished"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"books\": []\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Book",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Created book ID exists\", function () {",
+									"    const body = pm.response.json();",
+									"    pm.expect(body.book_id).to.be.a(\"number\");",
+									"});",
+									"",
+									"pm.environment.set(\"created_book_id\", pm.response.json().book_id);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "Success – Book created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Гарри Поттер\",\n  \"author\": \"Джоан Роулинг\",\n  \"pages\": 500,\n  \"current_page\": 0,\n  \"status\": \"to_read\",\n  \"genre_id\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/books?title=\"Гарри Поттер 2\"",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"books"
+									],
+									"query": [
+										{
+											"key": "title",
+											"value": "\"Гарри Поттер 2\""
+										}
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"book_id\": 3,\n    \"message\": \"Book created successfully\",\n    \"created_at\": \"2025-01-16T09:00:00Z\"\n}"
+						},
+						{
+							"name": "Error – Validation failed",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Гарри Поттер\",\n  \"author\": \"Джоан Роулинг\",\n  \"pages\": 500,\n  \"current_page\": 0,\n  \"status\": \"to_read\",\n  \"genre_id\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/books?title",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"books"
+									],
+									"query": [
+										{
+											"key": "title",
+											"value": null
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Validation failed\",\n    \"code\": \"VALIDATION_ERROR\",\n    \"details\": {\n        \"title\": \"Title is required\"\n    }\n}"
+						},
+						{
+							"name": "Error – Duplicate title",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Гарри Поттер\",\n  \"author\": \"Джоан Роулинг\",\n  \"pages\": 500,\n  \"current_page\": 0,\n  \"status\": \"to_read\",\n  \"genre_id\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/books?title=\"Гарри Поттер\"",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"books"
+									],
+									"query": [
+										{
+											"key": "title",
+											"value": "\"Гарри Поттер\""
+										}
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"error\": \"Validation failed\",\n    \"code\": \"TITLE_ALREADY_EXISTS\",\n    \"details\": {\n        \"title\": \"This title is already used by another book\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Book",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Book updated message exists\", function () {",
+									"    const body = pm.response.json();",
+									"    pm.expect(body.message).to.include(\"Book updated\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"reading\",\n  \"current_page\": 120\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/books?id=1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"books"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Book updated\"\n}"
+						},
+						{
+							"name": "Error — Book not found",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"reading\",\n  \"current_page\": 120\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/books?id=9999",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"books"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "9999"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"error\": \"Book not found\"\n}\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Book",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Book deleted message\", function () {",
+									"    const body = pm.response.json();",
+									"    pm.expect(body.message).to.include(\"deleted\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/books?id=9999",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"books"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "9999"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/books?id=1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"books"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Book deleted\"\n}"
+						},
+						{
+							"name": "Error — Book not found",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/books?id=9999",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"books"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "9999"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Book not found\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Genres",
+			"item": [
+				{
+					"name": "Get Genres",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Genres array exists\", function () {",
+									"    const body = pm.response.json();",
+									"    pm.expect(body.genres).to.be.an(\"array\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "Success — deleted=false",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/genres?deleted=false",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"genres"
+									],
+									"query": [
+										{
+											"key": "deleted",
+											"value": "false"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"genres\": [\n        {\n            \"id\": 1,\n            \"name\": \"Fantasy\",\n            \"deleted\": false\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Adventure\",\n            \"deleted\": false\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Horror\",\n            \"deleted\": false\n        },\n        {\n            \"id\": 4,\n            \"name\": \"Sci-Fi\",\n            \"deleted\": false\n        }\n    ]\n}"
+						},
+						{
+							"name": "Success — deleted=true",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/genres?deleted=true",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"genres"
+									],
+									"query": [
+										{
+											"key": "deleted",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"genres\": [\n        {\n            \"id\": 10,\n            \"name\": \"Old Genre 1\",\n            \"deleted\": true\n        },\n        {\n            \"id\": 11,\n            \"name\": \"Old Genre 2\",\n            \"deleted\": true\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
