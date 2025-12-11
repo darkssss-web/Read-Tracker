@@ -7,7 +7,6 @@ CREATE TABLE Users (
     created_at  TEXT DEFAULT (datetime('now'))
 );
 
-
 CREATE TABLE Statuses (
     status_id   INTEGER PRIMARY KEY AUTOINCREMENT,
     name        TEXT NOT NULL UNIQUE
@@ -34,31 +33,31 @@ CREATE TABLE Books (
     FOREIGN KEY (status_id) REFERENCES Statuses(status_id)
 );
 
-
 CREATE TABLE Book_Genres (
-    book_id   INTEGER NOT NULL,
-    genre_id  INTEGER NOT NULL,
+    book_genre_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    book_id       INTEGER NOT NULL,
+    genre_id      INTEGER NOT NULL,
 
-    PRIMARY KEY (book_id, genre_id),
     FOREIGN KEY (book_id)  REFERENCES Books(book_id)   ON DELETE CASCADE,
     FOREIGN KEY (genre_id) REFERENCES Genres(genre_id) ON DELETE CASCADE
 );
 
+CREATE UNIQUE INDEX uq_book_genres_book_genre
+    ON Book_Genres (book_id, genre_id);
+
 CREATE TABLE Reading_Sessions (
     session_id       INTEGER PRIMARY KEY AUTOINCREMENT,
     book_id          INTEGER NOT NULL,
-    session_date     TEXT NOT NULL, 
-    pages_read       INTEGER NOT NULL, 
+    session_date     TEXT NOT NULL,
+    pages_read       INTEGER NOT NULL,
     duration_minutes INTEGER,
     note             TEXT,
 
     FOREIGN KEY (book_id) REFERENCES Books(book_id) ON DELETE CASCADE
 );
 
-
-CREATE INDEX idx_books_user      ON Books(user_id);
-CREATE INDEX idx_books_status    ON Books(status_id);
-
-CREATE INDEX idx_sessions_book   ON Reading_Sessions(book_id);
-
-CREATE INDEX idx_book_genres_g   ON Book_Genres(genre_id);
+CREATE INDEX idx_books_user        ON Books(user_id);
+CREATE INDEX idx_books_status      ON Books(status_id);
+CREATE INDEX idx_sessions_book     ON Reading_Sessions(book_id);
+CREATE INDEX idx_book_genres_book  ON Book_Genres(book_id);
+CREATE INDEX idx_book_genres_genre ON Book_Genres(genre_id);
