@@ -4,7 +4,7 @@
 		"name": "Read-Tracker API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "50726045",
-		"_collection_link": "https://asadikqwert-7135334.postman.co/workspace/f9fd55ed-0462-44f5-8cdd-34ac6cd04fda/collection/50726045-952300de-231a-4527-8327-f54800c06bda?action=share&source=collection_link&creator=50726045"
+		"_collection_link": "https://asadikqwert-7135334.postman.co/workspace/Qwert-Asadik's-Workspace~f9fd55ed-0462-44f5-8cdd-34ac6cd04fda/collection/50726045-952300de-231a-4527-8327-f54800c06bda?action=share&source=collection_link&creator=50726045"
 	},
 	"item": [
 		{
@@ -307,8 +307,26 @@
 						}
 					],
 					"request": {
-						"method": "GET",
-						"header": []
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Гарри Поттер\",\n  \"author\": \"Джоан Роулинг\",\n  \"pages\": 500,\n  \"current_page\": 0,\n  \"status\": \"to_read\",\n  \"genre_id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/books",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"books"
+							]
+						}
 					},
 					"response": [
 						{
@@ -474,8 +492,32 @@
 						}
 					],
 					"request": {
-						"method": "GET",
-						"header": []
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"reading\",\n  \"current_page\": 120\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/books?id=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"books"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
 					},
 					"response": [
 						{
@@ -594,7 +636,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/books?id=9999",
+							"raw": "{{base_url}}/books?id=1",
 							"host": [
 								"{{base_url}}"
 							],
@@ -604,7 +646,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "9999"
+									"value": "1"
 								}
 							]
 						}
@@ -711,7 +753,22 @@
 					],
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/genres?deleted=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"genres"
+							],
+							"query": [
+								{
+									"key": "deleted",
+									"value": "false"
+								}
+							]
+						}
 					},
 					"response": [
 						{
