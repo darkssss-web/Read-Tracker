@@ -1,42 +1,24 @@
-@startuml Добавление_Сессии_Чтения
+@startuml
+actor Пользователь
+participant UI
+participant "SessionService" as Service
+participant DB
 
-actor "Пользователь" as User
-participant "Интерфейс" as UI
-participant "Контроллер" as Controller
-participant "Сервис сессий" as SessionService
-participant "Сервис книг" as BookService
-database "База данных" as DB
+Пользователь -> UI : добавить сессию чтения
+UI -> Service : createSession(data)
+activate Service
 
-User -> UI : Открыть страницу книги
-UI -> User : Показать детали книги и список сессий
+Service -> DB : insert ReadingSession
+activate DB
+DB --> Service
+deactivate DB
 
-User -> UI : Нажать "Добавить сессию"
-UI -> Controller : POST /books/{id}/sessions (данные сессии)
-activate Controller
+alt Прочитаны все страницы книги
+  Service -> DB : update Book status = "finished"
+else Прочитана часть книги
+  Service -> DB : update Book progress
+end
 
-Controller -> SessionService : createSession(book_id, данные)
-activate SessionService
-
-SessionService -> DB : INSERT INTO Reading_Sessions(...)
-DB --> SessionService : new session_id
-
-' Обновляем прогресс книги после добавления сессии
-SessionService -> BookService : recalculateProgress(book_id)
-activate BookService
-
-BookService -> DB : SELECT SUM(pages_read) ...
-DB --> BookService : total_pages_read
-
-BookService -> DB : UPDATE Books SET ...progress...
-DB --> BookService : OK
-deactivate BookService
-
-SessionService --> Controller : Успех(session_id)
-deactivate SessionService
-
-Controller --> UI : 201 Created (session_id)
-deactivate Controller
-
-UI -> User : Показать обновлённый прогресс книги
-
+Service --> UI : сессия сохранена
+deactivate Service
 @enduml
