@@ -1,27 +1,22 @@
-@startuml Ежедневная_Статистика_Чтения
+@startuml
+actor Пользователь
+participant UI
+participant "StatsService" as Service
+participant DB
 
-actor "Пользователь" as User
-participant "Интерфейс" as UI
-participant "Контроллер" as Controller
-participant "Сервис статистики" as StatsService
-database "База данных" as DB
+Пользователь -> UI : запросить статистику за день
+UI -> Service : getDailyStats(date)
+activate Service
 
-User -> UI : Открыть экран "Статистика"
-UI -> Controller : GET /stats/daily?date=TODAY
-activate Controller
+Service -> DB : get sessions by date
+activate DB
+DB --> Service : список сессий
+deactivate DB
 
-Controller -> StatsService : getDailyStats(user_id, date)
-activate StatsService
+loop для каждой сессии чтения
+  Service -> Service : суммировать pages_read
+end
 
-StatsService -> DB : SELECT SUM(pages_read), COUNT(*)\nFROM Reading_Sessions\nWHERE user_id=? AND date(session_date)=?
-DB --> StatsService : pages_count, sessions_count
-
-StatsService --> Controller : DailyStats(pages_count, sessions_count)
-deactivate StatsService
-
-Controller --> UI : 200 OK (статистика дня)
-deactivate Controller
-
-UI -> User : Показать страницы за день и количество сессий
-
+Service --> UI : показать статистику
+deactivate Service
 @enduml
