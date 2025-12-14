@@ -1,30 +1,22 @@
-@startuml Добавление_Книги
+@startuml
+actor Пользователь
+participant UI
+participant "BookService" as Service
+participant DB
 
-actor "Пользователь" as User
-participant "Интерфейс" as UI
-participant "Контроллер" as Controller
-participant "Сервис книг" as BookService
-database "База данных" as DB
+Пользователь -> UI : открыть форму добавления книги
+UI -> Service : addBook(data)
+activate Service
 
-User -> UI : Открыть форму добавления книги
-UI -> User : Показать форму
+Service -> DB : insert Book
+activate DB
+DB --> Service
+deactivate DB
 
-User -> UI : Заполнить данные и нажать "Сохранить"
-UI -> Controller : POST /books (данные книги)
-activate Controller
+opt Пользователь указал статус
+  Service -> DB : update status
+end
 
-Controller -> BookService : createBook(данные)
-activate BookService
-
-BookService -> DB : INSERT INTO Books(...)
-DB --> BookService : new book_id
-
-BookService --> Controller : Успех(book_id)
-deactivate BookService
-
-Controller --> UI : 201 Created (book_id)
-deactivate Controller
-
-UI -> User : Показать сообщение "Книга добавлена"
-
+Service --> UI : книга добавлена
+deactivate Service
 @enduml
